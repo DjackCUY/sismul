@@ -96,7 +96,7 @@ $user = $_SESSION['user'];
                 <div class="profile-avatar">FA</div>
                 <div class="profile-name">Fatimah Azzahrah</div>
                 <div class="profile-email">fatimah.azzahrah@email.com</div>
-                <button class="edit-profile-btn">Edit Profil</button>
+                <a href="php/handler/profil/editprofil.php"><button class="edit-profile-btn">Edit Profil</button></a>
             </div>
 
             <div class="settings-section">
