@@ -255,3 +255,25 @@
                 }
             }
         }
+
+    // Mata Saldo
+    function toggleBalance() {
+    const balanceValue = document.getElementById('balanceValue');
+    const balanceToggle = document.getElementById('balanceToggle');
+    
+    if (balanceVisible) {
+        // Sembunyikan saldo
+        balanceValue.textContent = '••••••••';
+        balanceValue.classList.add('balance-hidden');
+        balanceToggle.classList.remove('bi-eye');
+        balanceToggle.classList.add('bi-eye-slash');
+        balanceVisible = false;
+    } else {
+        // Tampilkan saldo
+        balanceValue.textContent = originalBalance;
+        balanceValue.classList.remove('balance-hidden');
+        balanceToggle.classList.remove('bi-eye-slash');
+        balanceToggle.classList.add('bi-eye');
+        balanceVisible = true;
+    }
+}
