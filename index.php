@@ -8,7 +8,6 @@
 </head>
 <body>
     <div class="phone-container">
-        <!-- Login Screen -->
         <div class="login-screen" id="loginScreen">
             <div class="logo">
                 Alim<span>Bank</span>
@@ -26,6 +25,5 @@
             <p>Belum Punya Akun..? <a href="reg.php">Klik Disini</a> </p>
         </div>
     </div>
-    <!-- <script src="js/main.js"></script> -->
 </body>
 </html>
