@@ -517,10 +517,10 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
                 <div class="screen-title">Transfer Dana</div>
             </div>
 
-            <form class="transfer-form" id="transferForm">
+            <form class="transfer-form" id="transferForm" action="php/handler/transaksi/proses_transaksi.php" method="post">
                 <div class="form-group">
                     <label class="form-label">Nomor Rekening Tujuan</label>
-                    <input type="text" class="form-input" placeholder="Masukkan nomor rekening" id="accountNumber" required>
+                    <input type="text" class="form-input" placeholder="Masukkan nomor rekening" id="accountNumber" name="rekening_tujuan" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Nama Penerima</label>
@@ -528,11 +528,11 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
                 </div>
                 <div class="form-group">
                     <label class="form-label">Jumlah Transfer</label>
-                    <input type="number" class="form-input" placeholder="Rp 0" id="transferAmount" required>
+                    <input type="number" class="form-input" placeholder="Rp 0" id="transferAmount" name="jumlah" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Catatan (Opsional)</label>
-                    <input type="text" class="form-input" placeholder="Tambahkan catatan" id="transferNote">
+                    <input type="text" class="form-input" placeholder="Tambahkan catatan" id="transferNote" name="catatan">
                 </div>
                 <button type="submit" class="submit-btn">Transfer Sekarang</button>
             </form>
@@ -542,46 +542,50 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
         <div class="success-screen" id="successScreen">
             <div class="success-icon">✓</div>
             <div class="success-title">Transaksi Berhasil</div>
+
             <div class="transaction-details">
                 <div class="detail-row">
                     <span class="detail-label">Tujuan:</span>
-                    <span class="detail-value" id="successRecipient">TOKO HYPERSHOP.CO</span>
+                    <span class="detail-value" id="successRecipient">-</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Nomor Transaksi:</span>
-                    <span class="detail-value">#8128572394</span>
+                    <span class="detail-value" id="successTransaksi">#-</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Tanggal & Waktu:</span>
-                    <span class="detail-value" id="transactionDate">Dec 15, 2022 | 8:58:45 PM</span>
+                    <span class="detail-value" id="transactionDate">-</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Nomor Referensi:</span>
-                    <span class="detail-value">442774356886</span>
+                    <span class="detail-value" id="successRef">-</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Sumber Dana:</span>
-                    <span class="detail-value">Fatimah Azzahrah</span>
+                    <span class="detail-value" id="successSender">-</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Nomor Tujuan:</span>
-                    <span class="detail-value">3434634634643</span>
+                    <span class="detail-value" id="successAccount">-</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Alias Penerima:</span>
-                    <span class="detail-value">Kevin Hypershop</span>
+                    <span class="detail-value" id="successAlias">-</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Catatan:</span>
-                    <span class="detail-value">-</span>
+                    <span class="detail-value" id="successNote">-</span>
                 </div>
             </div>
-            <div class="amount-display" id="successAmount">Rp 10.525</div>
+
+            <div class="amount-display" id="successAmount">Rp 0</div>
+
             <div class="action-buttons">
                 <button class="secondary-btn">Bagikan</button>
                 <button class="primary-btn" onclick="showMain()">Selesai</button>
             </div>
         </div>
+
 
         <!-- Activity Screen -->
         <div class="activity-screen" id="activityScreen">
@@ -629,5 +633,27 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
     const originalBalance = '<?= formatRupiah($rekening['saldo']) ?>';
 </script>
     <script src="js/main.js"></script>
+    <script>
+    const currentUserName = "<?php echo $_SESSION['user']['nama_lengkap']; ?>";
+
+    document.getElementById("accountNumber").addEventListener("input", function () {
+        const nomorRekening = this.value;
+        const namaField = document.getElementById("recipientName");
+    
+        if (nomorRekening.length >= 5) { // Bisa disesuaikan
+            fetch(`php/handler/get/get_nama_penerima.php?rekening=${nomorRekening}`)
+                .then(response => response.text())
+                .then(data => {
+                    namaField.value = data || "Rekening tidak ditemukan";
+                })
+                .catch(() => {
+                    namaField.value = "Gagal mengambil nama";
+                });
+        } else {
+            namaField.value = "";
+        }
+    });
+</script>
+
 </body>
 </html>

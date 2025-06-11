@@ -9,24 +9,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Hash password sebelum disimpan
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    // Siapkan SQL statement
-    $stmt = $conn->prepare("INSERT INTO nasabah (nama_lengkap, alamat, nomor_telepon, email, password, jenis_kelamin) VALUES (?, ?, ?, ?, ?, ?)");
-
-    // Bind parameter ke query: s = string
+    $stmt = $conn->prepare("INSERT INTO nasabah (nama_lengkap, alamat, nomor_telepon, email, password, jenis_kelamin, tanggal_daftar) VALUES (?, ?, ?, ?, ?, ?, NOW())");
     $stmt->bind_param("ssssss", $nama, $alamat, $telepon, $email, $hashed_password, $jenis);
 
-    // Eksekusi dan redirect
     if ($stmt->execute()) {
-        header("Location: ../../index.php");
-        exit();
+        $id_nasabah_baru = $conn->insert_id;
+
+        $nomor_rekening = date("ymdHis") . rand(10, 99);
+
+        $id_jenis = 1;
+
+        $saldo_awal = 100000;
+
+        $pin = "123456";
+
+        $stmt2 = $conn->prepare("INSERT INTO rekening (nomor_rekening, id_nasabah, id_jenis, saldo, tanggal_buka, status_rekening, pin) VALUES (?, ?, ?, ?, CURDATE(), 'AKTIF', ?)");
+        $stmt2->bind_param("siids", $nomor_rekening, $id_nasabah_baru, $id_jenis, $saldo_awal, $pin);
+
+        if ($stmt2->execute()) {
+            header("Location: ../../index.php");
+            exit();
+        } else {
+            echo "Gagal membuat rekening: " . $stmt2->error;
+        }
+
+        $stmt2->close();
     } else {
-        echo "Gagal menambahkan data: " . $stmt->error;
+        echo "Gagal mendaftar: " . $stmt->error;
     }
 
-    // Tutup statement dan koneksi
     $stmt->close();
     $conn->close();
 }
