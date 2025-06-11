@@ -4,7 +4,7 @@ include "php/db/connect.php";
 
 // Cek apakah user sudah login
 if (!isset($_SESSION['user'])) {
-    header("Location: index.php");
+    header("Location: login.php");
     exit();
 }
 
@@ -86,61 +86,6 @@ $stmt_kategori = $conn->prepare($sql_kategori);
 $stmt_kategori->bind_param("s", $nomor_rekening);
 $stmt_kategori->execute();
 $result_kategori = $stmt_kategori->get_result();
-
-// Fungsi untuk generate rekomendasi berdasarkan saldo dan aktivitas
-function generateRecommendations($saldo, $total_pengeluaran, $total_pemasukan) {
-    $recommendations = [];
-    
-    // Rekomendasi berdasarkan saldo
-    if ($saldo > 10000000) {
-        $recommendations[] = [
-            'icon' => 'bi-graph-up-arrow',
-            'title' => 'Investasi Deposito',
-            'subtitle' => 'Bunga hingga 6.5% p.a',
-            'amount' => 'Mulai 10 Juta',
-            'type' => 'investment'
-        ];
-    } elseif ($saldo > 5000000) {
-        $recommendations[] = [
-            'icon' => 'bi-piggy-bank',
-            'title' => 'Tabungan Premium',
-            'subtitle' => 'Bunga lebih tinggi',
-            'amount' => 'Upgrade Gratis',
-            'type' => 'savings'
-        ];
-    } else {
-        $recommendations[] = [
-            'icon' => 'bi-wallet2',
-            'title' => 'Target Menabung',
-            'subtitle' => 'Capai impian Anda',
-            'amount' => 'Mulai 50rb/hari',
-            'type' => 'goal'
-        ];
-    }
-    
-    // Rekomendasi berdasarkan pengeluaran
-    if ($total_pengeluaran > $total_pemasukan) {
-        $recommendations[] = [
-            'icon' => 'bi-shield-check',
-            'title' => 'Proteksi Finansial',
-            'subtitle' => 'Asuransi & Dana Darurat',
-            'amount' => 'Mulai 100rb/bulan',
-            'type' => 'protection'
-        ];
-    } else {
-        $recommendations[] = [
-            'icon' => 'bi-credit-card',
-            'title' => 'Kartu Kredit',
-            'subtitle' => 'Cashback hingga 5%',
-            'amount' => 'Tanpa iuran tahunan',
-            'type' => 'credit'
-        ];
-    }
-    
-    return array_slice($recommendations, 0, 2);
-}
-
-$recommendations = generateRecommendations($rekening['saldo'], $total_pengeluaran, $total_pemasukan);
 ?>
 
 <!DOCTYPE html>
@@ -150,34 +95,6 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlimBank - Mobile Banking</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Tambahkan di dalam tag <style> yang sudah ada di dashboard.php -->
-<style>
-
-/* Perbaikan hover navbar - area yang lebih kecil dan rapi */
-.bottom-nav .nav-item {
-    padding: 6px 4px;
-    margin: 0 2px;
-    border-radius: 6px;
-    min-width: 55px;
-    transition: all 0.2s ease;
-}
-
-.bottom-nav .nav-item:hover {
-    background-color: rgba(255, 255, 255, 0.03);
-    transform: translateY(-0.5px);
-}
-
-.bottom-nav .nav-item.active {
-    background-color: rgba(76, 175, 80, 0.15);
-}
-
-/* Jika ingin lebih kecil lagi */
-.bottom-nav .nav-items {
-    gap: 2px;
-    padding: 0 4px;
-}
-</style>
 </head>
 <body>
     <div class="phone-container">
@@ -196,26 +113,26 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
 
             <div class="report-summary">
                 <div class="summary-row">
-                    <span class="summary-label"><i class="bi bi-arrow-down-circle text-success"></i> Total Pemasukan</span>
+                    <span class="summary-label">Total Pemasukan</span>
                     <span class="summary-value positive" id="totalIncome">+<?= formatRupiah($total_pemasukan) ?></span>
                 </div>
                 <div class="summary-row">
-                    <span class="summary-label"><i class="bi bi-arrow-up-circle text-danger"></i> Total Pengeluaran</span>
+                    <span class="summary-label">Total Pengeluaran</span>
                     <span class="summary-value negative" id="totalExpense">-<?= formatRupiah($total_pengeluaran) ?></span>
                 </div>
                 <div class="summary-row">
-                    <span class="summary-label"><i class="bi bi-calculator"></i> Saldo Bersih</span>
+                    <span class="summary-label">Saldo Bersih</span>
                     <span class="summary-value <?= $saldo_bersih >= 0 ? 'positive' : 'negative' ?>" id="netBalance"><?= $saldo_bersih >= 0 ? '+' : '' ?><?= formatRupiah($saldo_bersih) ?></span>
                 </div>
                 <div class="summary-row">
-                    <span class="summary-label"><i class="bi bi-graph-up"></i> Rata-rata Harian</span>
+                    <span class="summary-label">Rata-rata Harian</span>
                     <span class="summary-value" id="dailyAverage"><?= formatRupiah(abs($rata_rata_harian)) ?></span>
                 </div>
             </div>
 
             <div class="chart-container">
                 <div class="chart-placeholder">
-                    <div style="font-size: 48px; margin-bottom: 10px;"><i class="bi bi-bar-chart"></i></div>
+                    <div style="font-size: 48px; margin-bottom: 10px;">📊</div>
                     <div>Grafik Transaksi</div>
                     <div style="font-size: 12px; opacity: 0.6; margin-top: 5px;">Fitur visualisasi akan ditambahkan</div>
                 </div>
@@ -223,15 +140,13 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
 
             <div class="features-section">
                 <div class="section-title">
-                    <span><i class="bi bi-pie-chart"></i> Kategori Pengeluaran Tertinggi</span>
+                    <span>📈 Kategori Pengeluaran Tertinggi</span>
                 </div>
                 <?php if ($result_kategori->num_rows > 0): ?>
                     <?php while ($kategori = $result_kategori->fetch_assoc()): ?>
                         <div class="activity-item">
                             <div class="activity-info">
-                                <div class="activity-title">
-                                    <i class="bi bi-receipt"></i> <?= htmlspecialchars($kategori['nama_transaksi']) ?>
-                                </div>
+                                <div class="activity-title"><?= htmlspecialchars($kategori['nama_transaksi']) ?></div>
                                 <div class="activity-date"><?= $kategori['jumlah_transaksi'] ?> transaksi</div>
                             </div>
                             <div class="activity-amount">-<?= formatRupiah($kategori['total_jumlah']) ?></div>
@@ -240,7 +155,7 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
                 <?php else: ?>
                     <div class="activity-item">
                         <div class="activity-info">
-                            <div class="activity-title"><i class="bi bi-inbox"></i> Tidak ada transaksi</div>
+                            <div class="activity-title">Tidak ada transaksi</div>
                             <div class="activity-date">7 hari terakhir</div>
                         </div>
                         <div class="activity-amount">Rp 0</div>
@@ -260,14 +175,14 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
                 <div class="profile-avatar"><?= strtoupper(substr($user['nama_lengkap'], 0, 2)) ?></div>
                 <div class="profile-name"><?= htmlspecialchars($user['nama_lengkap']) ?></div>
                 <div class="profile-email"><?= htmlspecialchars($user['email']) ?></div>
-                <button class="edit-profile-btn"><i class="bi bi-pencil"></i> Edit Profil</button>
+                <button class="edit-profile-btn">Edit Profil</button>
             </div>
 
             <div class="settings-section">
-                <div class="settings-title"><i class="bi bi-shield-lock"></i> Keamanan</div>
+                <div class="settings-title">🔐 Keamanan</div>
                 <div class="setting-item" onclick="toggleSetting('biometric')">
                     <div class="setting-left">
-                        <div class="setting-icon"><i class="bi bi-fingerprint"></i></div>
+                        <div class="setting-icon">👆</div>
                         <div class="setting-info">
                             <div class="setting-name">Login Biometrik</div>
                             <div class="setting-desc">Gunakan sidik jari atau Face ID</div>
@@ -277,35 +192,35 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
                 </div>
                 <div class="setting-item">
                     <div class="setting-left">
-                        <div class="setting-icon"><i class="bi bi-key"></i></div>
+                        <div class="setting-icon">🔑</div>
                         <div class="setting-info">
                             <div class="setting-name">Ubah PIN</div>
                             <div class="setting-desc">Ganti PIN transaksi Anda</div>
                         </div>
                     </div>
                     <div class="setting-right">
-                        <span><i class="bi bi-chevron-right"></i></span>
+                        <span>→</span>
                     </div>
                 </div>
                 <div class="setting-item">
                     <div class="setting-left">
-                        <div class="setting-icon"><i class="bi bi-lock"></i></div>
+                        <div class="setting-icon">🔒</div>
                         <div class="setting-info">
                             <div class="setting-name">Ubah Password</div>
                             <div class="setting-desc">Ganti password login Anda</div>
                         </div>
                     </div>
                     <div class="setting-right">
-                        <span><i class="bi bi-chevron-right"></i></span>
+                        <span>→</span>
                     </div>
                 </div>
             </div>
 
             <div class="settings-section">
-                <div class="settings-title"><i class="bi bi-bell"></i> Notifikasi</div>
+                <div class="settings-title">🔔 Notifikasi</div>
                 <div class="setting-item" onclick="toggleSetting('push')">
                     <div class="setting-left">
-                        <div class="setting-icon"><i class="bi bi-phone-vibrate"></i></div>
+                        <div class="setting-icon">📱</div>
                         <div class="setting-info">
                             <div class="setting-name">Push Notification</div>
                             <div class="setting-desc">Notifikasi transaksi & promo</div>
@@ -315,7 +230,7 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
                 </div>
                 <div class="setting-item" onclick="toggleSetting('email')">
                     <div class="setting-left">
-                        <div class="setting-icon"><i class="bi bi-envelope"></i></div>
+                        <div class="setting-icon">📧</div>
                         <div class="setting-info">
                             <div class="setting-name">Email Notification</div>
                             <div class="setting-desc">Laporan bulanan via email</div>
@@ -325,7 +240,7 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
                 </div>
                 <div class="setting-item" onclick="toggleSetting('sms')">
                     <div class="setting-left">
-                        <div class="setting-icon"><i class="bi bi-chat-text"></i></div>
+                        <div class="setting-icon">💬</div>
                         <div class="setting-info">
                             <div class="setting-name">SMS Notification</div>
                             <div class="setting-desc">Konfirmasi transaksi via SMS</div>
@@ -336,10 +251,10 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
             </div>
 
             <div class="settings-section">
-                <div class="settings-title"><i class="bi bi-gear"></i> Umum</div>
+                <div class="settings-title">⚙️ Umum</div>
                 <div class="setting-item">
                     <div class="setting-left">
-                        <div class="setting-icon"><i class="bi bi-globe"></i></div>
+                        <div class="setting-icon">🌐</div>
                         <div class="setting-info">
                             <div class="setting-name">Bahasa</div>
                             <div class="setting-desc">Pilih bahasa aplikasi</div>
@@ -347,12 +262,12 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
                     </div>
                     <div class="setting-right">
                         <span class="setting-value">Indonesia</span>
-                        <span><i class="bi bi-chevron-right"></i></span>
+                        <span>→</span>
                     </div>
                 </div>
                 <div class="setting-item">
                     <div class="setting-left">
-                        <div class="setting-icon"><i class="bi bi-moon"></i></div>
+                        <div class="setting-icon">🌙</div>
                         <div class="setting-info">
                             <div class="setting-name">Mode Gelap</div>
                             <div class="setting-desc">Aktifkan tema gelap</div>
@@ -362,7 +277,7 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
                 </div>
                 <div class="setting-item">
                     <div class="setting-left">
-                        <div class="setting-icon"><i class="bi bi-currency-dollar"></i></div>
+                        <div class="setting-icon">💰</div>
                         <div class="setting-info">
                             <div class="setting-name">Mata Uang</div>
                             <div class="setting-desc">Format tampilan uang</div>
@@ -370,63 +285,63 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
                     </div>
                     <div class="setting-right">
                         <span class="setting-value">IDR (Rp)</span>
-                        <span><i class="bi bi-chevron-right"></i></span>
+                        <span>→</span>
                     </div>
                 </div>
             </div>
 
             <div class="settings-section">
-                <div class="settings-title"><i class="bi bi-headset"></i> Bantuan</div>
+                <div class="settings-title">📞 Bantuan</div>
                 <div class="setting-item">
                     <div class="setting-left">
-                        <div class="setting-icon"><i class="bi bi-question-circle"></i></div>
+                        <div class="setting-icon">❓</div>
                         <div class="setting-info">
                             <div class="setting-name">FAQ</div>
                             <div class="setting-desc">Pertanyaan yang sering ditanyakan</div>
                         </div>
                     </div>
                     <div class="setting-right">
-                        <span><i class="bi bi-chevron-right"></i></span>
+                        <span>→</span>
                     </div>
                 </div>
                 <div class="setting-item">
                     <div class="setting-left">
-                        <div class="setting-icon"><i class="bi bi-chat-dots"></i></div>
+                        <div class="setting-icon">💬</div>
                         <div class="setting-info">
                             <div class="setting-name">Live Chat</div>
                             <div class="setting-desc">Hubungi customer service</div>
                         </div>
                     </div>
                     <div class="setting-right">
-                        <span><i class="bi bi-chevron-right"></i></span>
+                        <span>→</span>
                     </div>
                 </div>
                 <div class="setting-item">
                     <div class="setting-left">
-                        <div class="setting-icon"><i class="bi bi-file-text"></i></div>
+                        <div class="setting-icon">📋</div>
                         <div class="setting-info">
                             <div class="setting-name">Syarat & Ketentuan</div>
                             <div class="setting-desc">Kebijakan penggunaan aplikasi</div>
                         </div>
                     </div>
                     <div class="setting-right">
-                        <span><i class="bi bi-chevron-right"></i></span>
+                        <span>→</span>
                     </div>
                 </div>
                 <div class="setting-item">
                     <div class="setting-left">
-                        <div class="setting-icon"><i class="bi bi-shield-check"></i></div>
+                        <div class="setting-icon">🔒</div>
                         <div class="setting-info">
                             <div class="setting-name">Kebijakan Privasi</div>
                             <div class="setting-desc">Perlindungan data pribadi</div>
                         </div>
                     </div>
                     <div class="setting-right">
-                        <span><i class="bi bi-chevron-right"></i></span>
+                        <span>→</span>
                     </div>
                 </div>
             </div>
-            <a href="php/auth/logout.php"><button class="logout-btn"><i class="bi bi-box-arrow-left"></i> Keluar dari Akun</button></a>
+            <a href="php/auth/logout.php"><button class="logout-btn">Keluar dari Akun</button></a>
         </div>
 
         <!-- Main Screen -->
@@ -453,81 +368,59 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
             </div>
 
             <div class="balance-card">
-            <div class="balance-label"><i class="bi bi-wallet2"></i> Saldo Rekening</div>
-            <div class="balance-amount" id="balanceAmount">
-                <span id="balanceValue"></span>
-                <i class="bi bi-eye-slash balance-toggle" id="balanceToggle" onclick="toggleBalance()"></i>
+                <div class="balance-label">Saldo Rekening</div>
+                <div class="balance-amount" id="balanceAmount"><?= formatRupiah($rekening['saldo']) ?></div>
+                <h5><?= htmlspecialchars($rekening['nomor_rekening']) ?></h5>
             </div>
-            <h5><i class="bi bi-credit-card"></i> <?= htmlspecialchars($rekening['nomor_rekening']) ?></h5>
-        </div>
 
             <div class="features-section">
                 <div class="section-title">
-                    <span><i class="bi bi-lightbulb"></i> Rekomendasi Untuk Anda</span>
-                    <span><i class="bi bi-plus-circle"></i></span>
+                    <span>🎁 Promo & Pengingat</span>
+                    <span>+</span>
                 </div>
                 <div class="feature-grid">
-                    <?php foreach ($recommendations as $rec): ?>
-                        <div class="feature-card <?= $rec['type'] ?>">
-                            <div class="feature-icon"><i class="bi <?= $rec['icon'] ?>"></i></div>
-                            <div class="feature-title"><?= $rec['title'] ?></div>
-                            <div class="feature-amount"><?= $rec['amount'] ?></div>
-                            <div class="feature-subtitle"><?= $rec['subtitle'] ?></div>
-                        </div>
-                    <?php endforeach; ?>
+                    <div class="feature-card">
+                        <div class="feature-icon">💳</div>
+                        <div class="feature-title">Diskon hingga</div>
+                        <div class="feature-amount">Rp 15.250</div>
+                        <div class="feature-subtitle">setiap transaksi non-tunai</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💰</div>
+                        <div class="feature-title">Bulanan</div>
+                        <div class="feature-amount">Rp 180</div>
+                        <div class="feature-subtitle">saving goal</div>
+                    </div>
                 </div>
             </div>
 
             <div class="features-section">
                 <div class="section-title">
-                    <span style="color: white;"><i class="bi bi-calendar-check"></i> Aktivitas Mendatang</span>
-                    <span><i class="bi bi-plus-circle"></i></span>
-                </div>
-                <div class="upcoming-activities">
-                    <div class="activity-suggestion">
-                        <i class="bi bi-alarm"></i>
-                        <div>
-                            <div>Pembayaran Tagihan Listrik</div>
-                            <div>Jatuh tempo: 15 Juni 2025</div>
-                        </div>
-                    </div>
-                    <div class="activity-suggestion">
-                        <i class="bi bi-piggy-bank"></i>
-                        <div>
-                            <div>Target Menabung Bulanan</div>
-                            <div>Progress: 65% dari target</div>
-                        </div>
-                    </div>
-                    <div class="activity-suggestion">
-                        <i class="bi bi-credit-card"></i>
-                        <div>
-                            <div>Cashback Promo</div>
-                            <div>Berlaku hingga akhir bulan</div>
-                        </div>
-                    </div>
+                    <span>📈 Aktivitas Mendatang</span>
+                    <span>+</span>
                 </div>
             </div>
 
             <div class="bottom-nav">
                 <div class="nav-items">
                     <div class="nav-item active" onclick="showMain()">
-                        <div class="nav-icon"><i class="bi bi-house-fill"></i></div>
+                        <div class="nav-icon">🏠</div>
                         <div class="nav-label">Home</div>
                     </div>
                     <div class="nav-item" onclick="showActivity()">
-                        <div class="nav-icon"><i class="bi bi-list-ul"></i></div>
+                        <div class="nav-icon">📊</div>
                         <div class="nav-label">Transaksi</div>
                     </div>
                     <div class="nav-item" onclick="showTransfer()">
-                        <div class="nav-icon"><i class="bi bi-arrow-left-right"></i></div>
+                        <div class="nav-icon">💸</div>
                         <div class="nav-label">Transfer</div>
                     </div>
                     <div class="nav-item" onclick="showReport()">
-                        <div class="nav-icon"><i class="bi bi-graph-up"></i></div>
+                        <div class="nav-icon">📋</div>
                         <div class="nav-label">Laporan</div>
                     </div>
                     <div class="nav-item" onclick="showSettings()">
-                        <div class="nav-icon"><i class="bi bi-gear-fill"></i></div>
+                        <div class="nav-icon">⚙️</div>
                         <div class="nav-label">Setting</div>
                     </div>
                 </div>
@@ -541,31 +434,31 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
                 <div class="screen-title">Transfer Dana</div>
             </div>
 
-            <form class="transfer-form" id="transferForm" action="php/handler/transaksi/proses_transaksi.php" method="post">
+            <form class="transfer-form" id="transferForm" method="POST" action="php/transfer/process.php">
                 <div class="form-group">
                     <label class="form-label">Nomor Rekening Tujuan</label>
-                    <input type="text" class="form-input" placeholder="Masukkan nomor rekening" id="accountNumber" name="rekening_tujuan" required>
+                    <input type="text" class="form-input" placeholder="Masukkan nomor rekening" id="accountNumber" name="nomor_rekening_tujuan" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Nama Penerima</label>
-                    <input type="text" class="form-input" placeholder="Nama akan muncul otomatis" id="recipientName" readonly>
+                    <input type="text" class="form-input" placeholder="Nama akan muncul otomatis" id="recipientName" name="nama_penerima" readonly>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Jumlah Transfer</label>
-                    <input type="number" class="form-input" placeholder="Rp 0" id="transferAmount" name="jumlah" required>
+                    <input type="number" class="form-input" placeholder="0" id="transferAmount" name="jumlah" min="10000" max="<?= $rekening['saldo'] ?>" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Catatan (Opsional)</label>
-                    <input type="text" class="form-input" placeholder="Tambahkan catatan" id="transferNote" name="catatan">
+                    <input type="text" class="form-input" placeholder="Tambahkan catatan" id="transferNote" name="keterangan">
                 </div>
                 <button type="submit" class="submit-btn">Transfer Sekarang</button>
             </form>
         </div>
+
         <!-- Success Screen -->
         <div class="success-screen" id="successScreen">
             <div class="success-icon">✓</div>
             <div class="success-title">Transaksi Berhasil</div>
-
             <div class="transaction-details">
                 <div class="detail-row">
                     <span class="detail-label">Tujuan:</span>
@@ -573,42 +466,27 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Nomor Transaksi:</span>
-                    <span class="detail-value" id="successTransaksi">#-</span>
+                    <span class="detail-value" id="transactionId">#-</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Tanggal & Waktu:</span>
-                    <span class="detail-value" id="transactionDate">-</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Nomor Referensi:</span>
-                    <span class="detail-value" id="successRef">-</span>
+                    <span class="detail-value" id="transactionDate"><?= date('M d, Y | g:i:s A') ?></span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Sumber Dana:</span>
-                    <span class="detail-value" id="successSender">-</span>
+                    <span class="detail-value"><?= htmlspecialchars($user['nama_lengkap']) ?></span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Nomor Tujuan:</span>
-                    <span class="detail-value" id="successAccount">-</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Alias Penerima:</span>
-                    <span class="detail-value" id="successAlias">-</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Catatan:</span>
-                    <span class="detail-value" id="successNote">-</span>
+                    <span class="detail-label">Nomor Rekening Asal:</span>
+                    <span class="detail-value"><?= htmlspecialchars($rekening['nomor_rekening']) ?></span>
                 </div>
             </div>
-
             <div class="amount-display" id="successAmount">Rp 0</div>
-
             <div class="action-buttons">
                 <button class="secondary-btn">Bagikan</button>
                 <button class="primary-btn" onclick="showMain()">Selesai</button>
             </div>
         </div>
-
 
         <!-- Activity Screen -->
         <div class="activity-screen" id="activityScreen">
@@ -618,65 +496,45 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
             </div>
 
             <div class="activity-list">
-                <div class="activity-item">
-                    <div class="activity-info">
-                        <div class="activity-title">Transfer ke TOKO HYPERSHOP.CO</div>
-                        <div class="activity-date">15 Dec 2022, 20:58</div>
+                <?php if ($result_transaksi->num_rows > 0): ?>
+                    <?php 
+                    // Reset pointer untuk membaca ulang
+                    $result_transaksi->data_seek(0);
+                    while ($transaksi = $result_transaksi->fetch_assoc()): 
+                        $is_kredit = ($transaksi['tipe_transaksi'] == 'KREDIT');
+                        $amount_display = ($is_kredit ? '+' : '-') . formatRupiah($transaksi['jumlah']);
+                        $date_formatted = date('d M Y, H:i', strtotime($transaksi['tanggal_transaksi']));
+                    ?>
+                        <div class="activity-item">
+                            <div class="activity-info">
+                                <div class="activity-title">
+                                    <?php if ($transaksi['kode_transaksi'] == 'TR' && !$is_kredit): ?>
+                                        Transfer ke Rekening <?= htmlspecialchars($transaksi['nomor_rekening_tujuan']) ?>
+                                    <?php elseif ($transaksi['kode_transaksi'] == 'TR' && $is_kredit): ?>
+                                        Transfer dari Rekening <?= htmlspecialchars($transaksi['nomor_rekening']) ?>
+                                    <?php else: ?>
+                                        <?= htmlspecialchars($transaksi['nama_transaksi']) ?>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="activity-date"><?= $date_formatted ?></div>
+                            </div>
+                            <div class="activity-amount" style="color: <?= $is_kredit ? '#4CAF50' : '#f44336' ?>">
+                                <?= $amount_display ?>
+                            </div>
+                        </div>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <div class="activity-title">Belum ada transaksi</div>
+                            <div class="activity-date">30 hari terakhir</div>
+                        </div>
+                        <div class="activity-amount">Rp 0</div>
                     </div>
-                    <div class="activity-amount">-Rp 10.525</div>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-info">
-                        <div class="activity-title">Top Up Saldo</div>
-                        <div class="activity-date">14 Dec 2022, 15:30</div>
-                    </div>
-                    <div class="activity-amount">+Rp 50.000</div>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-info">
-                        <div class="activity-title">Transfer dari Ahmad Rizki</div>
-                        <div class="activity-date">13 Dec 2022, 12:15</div>
-                    </div>
-                    <div class="activity-amount">+Rp 25.000</div>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-info">
-                        <div class="activity-title">Pembayaran PLN</div>
-                        <div class="activity-date">12 Dec 2022, 09:20</div>
-                    </div>
-                    <div class="activity-amount">-Rp 150.000</div>
-                </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
-<script>
-    let balanceVisible = false;
-    balanceValue.textContent = '••••••••';
-    balanceValue.classList.add('balance-hidden');
-    const originalBalance = '<?= formatRupiah($rekening['saldo']) ?>';
-</script>
     <script src="js/main.js"></script>
-    <script>
-    const currentUserName = "<?php echo $_SESSION['user']['nama_lengkap']; ?>";
-
-    document.getElementById("accountNumber").addEventListener("input", function () {
-        const nomorRekening = this.value;
-        const namaField = document.getElementById("recipientName");
-    
-        if (nomorRekening.length >= 5) { // Bisa disesuaikan
-            fetch(`php/handler/get/get_nama_penerima.php?rekening=${nomorRekening}`)
-                .then(response => response.text())
-                .then(data => {
-                    namaField.value = data || "Rekening tidak ditemukan";
-                })
-                .catch(() => {
-                    namaField.value = "Gagal mengambil nama";
-                });
-        } else {
-            namaField.value = "";
-        }
-    });
-</script>
-
 </body>
 </html>
