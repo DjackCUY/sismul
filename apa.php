@@ -143,6 +143,7 @@ function generateRecommendations($saldo, $total_pengeluaran, $total_pemasukan) {
 $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluaran, $total_pemasukan);
 ?>
 
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -152,7 +153,716 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .phone-container {
+            width: 375px;
+            height: 812px;
+            background: #1a1a1a;
+            border-radius: 40px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-screen, .transfer-screen, .activity-screen, .success-screen, .report-screen, .settings-screen {
+            width: 100%;
+            height: 100%;
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 20px;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            display: none;
+        }
+
+        .main-screen {
+            display: block;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .greeting {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .user-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 30px;
+            color: white;
+            position: relative;
+        }
+
+        .balance-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .balance-amount {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .balance-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .balance-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .balance-hidden {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+        
+        .feature-card.investment {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        .feature-card.savings {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .feature-card.goal {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .feature-card.protection {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .feature-card.credit {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .feature-amount {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .feature-subtitle {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .upcoming-activities {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+        
+        .activity-suggestion {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #333;
+            color: white;
+        }
+        
+        .activity-suggestion:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-suggestion i {
+            font-size: 20px;
+            margin-right: 12px;
+            color: #4CAF50;
+        }
+
+        /* Bottom Navigation - Made Solid */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #2a2a2a; /* Solid background instead of transparent */
+            border-top: 1px solid #333;
+            padding: 12px 0;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            color: #999;
+        }
+
+        .nav-item.active {
+            color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .nav-label {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Screen Headers */
+        .screen-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            margin-right: 16px;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .screen-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        /* Transfer Screen */
+        .transfer-form {
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px;
+            background: #2a2a2a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #45a049;
+        }
+
+        /* Activity Screen */
+        .activity-list {
+            color: white;
+        }
+
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .activity-date {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .activity-amount {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        /* Success Screen */
+        .success-screen {
+            text-align: center;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            margin: 0 auto 20px;
+        }
+
+        .success-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .transaction-details {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .detail-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-label {
+            opacity: 0.7;
+            font-size: 14px;
+        }
+
+        .detail-value {
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .amount-display {
+            font-size: 32px;
+            font-weight: 700;
+            color: #4CAF50;
+            margin-bottom: 30px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .secondary-btn, .primary-btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .secondary-btn {
+            background: #2a2a2a;
+            color: white;
+        }
+
+        .primary-btn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        /* Report Screen */
+        .report-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: #2a2a2a;
+            border: 1px solid #333;
+            border-radius: 20px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .report-summary {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .summary-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .summary-value {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .summary-value.positive {
+            color: #4CAF50;
+        }
+
+        .summary-value.negative {
+            color: #f44336;
+        }
+
+        .chart-container {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .chart-placeholder {
+            opacity: 0.6;
+        }
+
+        /* Settings Screen */
+        .profile-section {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 auto 16px;
+        }
+
+        .profile-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .profile-email {
+            opacity: 0.7;
+            margin-bottom: 16px;
+        }
+
+        .edit-profile-btn {
+            background: #2a2a2a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .settings-section {
+            margin-bottom: 30px;
+        }
+
+        .settings-title {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid #333;
+            color: white;
+            cursor: pointer;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .setting-icon {
+            width: 40px;
+            height: 40px;
+            background: #2a2a2a;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 18px;
+        }
+
+        .setting-name {
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .setting-desc {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .setting-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .setting-value {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .toggle-switch {
+            width: 50px;
+            height: 28px;
+            background: #333;
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #4CAF50;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(22px);
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 16px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Utility Classes */
+        .text-success {
+            color: #4CAF50;
+        }
+
+        .text-danger {
+            color: #f44336;
+        }
     </style>
 </head>
 <body>
@@ -173,19 +883,19 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
             <div class="report-summary">
                 <div class="summary-row">
                     <span class="summary-label"><i class="bi bi-arrow-down-circle text-success"></i> Total Pemasukan</span>
-                    <span class="summary-value positive" id="totalIncome">+<?= formatRupiah($total_pemasukan) ?></span>
+                    <span class="summary-value positive" id="totalIncome">+Rp 2.500.000</span>
                 </div>
                 <div class="summary-row">
                     <span class="summary-label"><i class="bi bi-arrow-up-circle text-danger"></i> Total Pengeluaran</span>
-                    <span class="summary-value negative" id="totalExpense">-<?= formatRupiah($total_pengeluaran) ?></span>
+                    <span class="summary-value negative" id="totalExpense">-Rp 1.750.000</span>
                 </div>
                 <div class="summary-row">
                     <span class="summary-label"><i class="bi bi-calculator"></i> Saldo Bersih</span>
-                    <span class="summary-value <?= $saldo_bersih >= 0 ? 'positive' : 'negative' ?>" id="netBalance"><?= $saldo_bersih >= 0 ? '+' : '' ?><?= formatRupiah($saldo_bersih) ?></span>
+                    <span class="summary-value positive" id="netBalance">+Rp 750.000</span>
                 </div>
                 <div class="summary-row">
                     <span class="summary-label"><i class="bi bi-graph-up"></i> Rata-rata Harian</span>
-                    <span class="summary-value" id="dailyAverage"><?= formatRupiah(abs($rata_rata_harian)) ?></span>
+                    <span class="summary-value" id="dailyAverage">Rp 107.143</span>
                 </div>
             </div>
 
@@ -201,27 +911,33 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
                 <div class="section-title">
                     <span><i class="bi bi-pie-chart"></i> Kategori Pengeluaran Tertinggi</span>
                 </div>
-                <?php if ($result_kategori->num_rows > 0): ?>
-                    <?php while ($kategori = $result_kategori->fetch_assoc()): ?>
-                        <div class="activity-item">
-                            <div class="activity-info">
-                                <div class="activity-title">
-                                    <i class="bi bi-receipt"></i> <?= htmlspecialchars($kategori['nama_transaksi']) ?>
-                                </div>
-                                <div class="activity-date"><?= $kategori['jumlah_transaksi'] ?> transaksi</div>
-                            </div>
-                            <div class="activity-amount">-<?= formatRupiah($kategori['total_jumlah']) ?></div>
+                <div class="activity-item">
+                    <div class="activity-info">
+                        <div class="activity-title">
+                            <i class="bi bi-receipt"></i> Makanan & Minuman
                         </div>
-                    <?php endwhile; ?>
-                <?php else: ?>
-                    <div class="activity-item">
-                        <div class="activity-info">
-                            <div class="activity-title"><i class="bi bi-inbox"></i> Tidak ada transaksi</div>
-                            <div class="activity-date">7 hari terakhir</div>
-                        </div>
-                        <div class="activity-amount">Rp 0</div>
+                        <div class="activity-date">12 transaksi</div>
                     </div>
-                <?php endif; ?>
+                    <div class="activity-amount">-Rp 450.000</div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-info">
+                        <div class="activity-title">
+                            <i class="bi bi-receipt"></i> Transportasi
+                        </div>
+                        <div class="activity-date">8 transaksi</div>
+                    </div>
+                    <div class="activity-amount">-Rp 320.000</div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-info">
+                        <div class="activity-title">
+                            <i class="bi bi-receipt"></i> Belanja
+                        </div>
+                        <div class="activity-date">6 transaksi</div>
+                    </div>
+                    <div class="activity-amount">-Rp 280.000</div>
+                </div>
             </div>
         </div>
 
@@ -429,13 +1145,10 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
             </div>
 
             <div class="balance-card">
-            <div class="balance-label"><i class="bi bi-wallet2"></i> Saldo Rekening</div>
-            <div class="balance-amount" id="balanceAmount">
-                <span id="balanceValue"></span>
-                <i class="bi bi-eye-slash balance-toggle" id="balanceToggle" onclick="toggleBalance()"></i>
+                <div class="balance-label"><i class="bi bi-wallet2"></i> Saldo Rekening</div>
+                <div class="balance-amount" id="balanceAmount"><?= formatRupiah($rekening['saldo']) ?></div>
+                <h5><i class="bi bi-credit-card"></i> <?= htmlspecialchars($rekening['nomor_rekening']) ?></h5>
             </div>
-            <h5><i class="bi bi-credit-card"></i> <?= htmlspecialchars($rekening['nomor_rekening']) ?></h5>
-        </div>
 
             <div class="features-section">
                 <div class="section-title">
@@ -456,29 +1169,29 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
 
             <div class="features-section">
                 <div class="section-title">
-                    <span style="color: white;"><i class="bi bi-calendar-check"></i> Aktivitas Mendatang</span>
+                    <span><i class="bi bi-calendar-check"></i> Aktivitas Mendatang</span>
                     <span><i class="bi bi-plus-circle"></i></span>
                 </div>
                 <div class="upcoming-activities">
                     <div class="activity-suggestion">
                         <i class="bi bi-alarm"></i>
                         <div>
-                            <div>Pembayaran Tagihan Listrik</div>
-                            <div>Jatuh tempo: 15 Juni 2025</div>
+                            <div style="font-weight: 600;">Pembayaran Tagihan Listrik</div>
+                            <div style="font-size: 12px; color: #666;">Jatuh tempo: 15 Juni 2025</div>
                         </div>
                     </div>
                     <div class="activity-suggestion">
                         <i class="bi bi-piggy-bank"></i>
                         <div>
-                            <div>Target Menabung Bulanan</div>
-                            <div>Progress: 65% dari target</div>
+                            <div style="font-weight: 600;">Target Menabung Bulanan</div>
+                            <div style="font-size: 12px; color: #666;">Progress: 65% dari target</div>
                         </div>
                     </div>
                     <div class="activity-suggestion">
                         <i class="bi bi-credit-card"></i>
                         <div>
-                            <div>Cashback Promo</div>
-                            <div>Berlaku hingga akhir bulan</div>
+                            <div style="font-weight: 600;">Cashback Promo</div>
+                            <div style="font-size: 12px; color: #666;">Berlaku hingga akhir bulan</div>
                         </div>
                     </div>
                 </div>
@@ -517,10 +1230,10 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
                 <div class="screen-title">Transfer Dana</div>
             </div>
 
-            <form class="transfer-form" id="transferForm" action="php/handler/transaksi/proses_transaksi.php" method="post">
+            <form class="transfer-form" id="transferForm">
                 <div class="form-group">
                     <label class="form-label">Nomor Rekening Tujuan</label>
-                    <input type="text" class="form-input" placeholder="Masukkan nomor rekening" id="accountNumber" name="rekening_tujuan" required>
+                    <input type="text" class="form-input" placeholder="Masukkan nomor rekening" id="accountNumber" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Nama Penerima</label>
@@ -528,11 +1241,11 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
                 </div>
                 <div class="form-group">
                     <label class="form-label">Jumlah Transfer</label>
-                    <input type="number" class="form-input" placeholder="Rp 0" id="transferAmount" name="jumlah" required>
+                    <input type="number" class="form-input" placeholder="Rp 0" id="transferAmount" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Catatan (Opsional)</label>
-                    <input type="text" class="form-input" placeholder="Tambahkan catatan" id="transferNote" name="catatan">
+                    <input type="text" class="form-input" placeholder="Tambahkan catatan" id="transferNote">
                 </div>
                 <button type="submit" class="submit-btn">Transfer Sekarang</button>
             </form>
@@ -542,50 +1255,46 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
         <div class="success-screen" id="successScreen">
             <div class="success-icon">✓</div>
             <div class="success-title">Transaksi Berhasil</div>
-
             <div class="transaction-details">
                 <div class="detail-row">
                     <span class="detail-label">Tujuan:</span>
-                    <span class="detail-value" id="successRecipient">-</span>
+                    <span class="detail-value" id="successRecipient">TOKO HYPERSHOP.CO</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Nomor Transaksi:</span>
-                    <span class="detail-value" id="successTransaksi">#-</span>
+                    <span class="detail-value">#8128572394</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Tanggal & Waktu:</span>
-                    <span class="detail-value" id="transactionDate">-</span>
+                    <span class="detail-value" id="transactionDate">Dec 15, 2022 | 8:58:45 PM</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Nomor Referensi:</span>
-                    <span class="detail-value" id="successRef">-</span>
+                    <span class="detail-value">442774356886</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Sumber Dana:</span>
-                    <span class="detail-value" id="successSender">-</span>
+                    <span class="detail-value">Fatimah Azzahrah</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Nomor Tujuan:</span>
-                    <span class="detail-value" id="successAccount">-</span>
+                    <span class="detail-value">3434634634643</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Alias Penerima:</span>
-                    <span class="detail-value" id="successAlias">-</span>
+                    <span class="detail-value">Kevin Hypershop</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Catatan:</span>
-                    <span class="detail-value" id="successNote">-</span>
+                    <span class="detail-value">-</span>
                 </div>
             </div>
-
-            <div class="amount-display" id="successAmount">Rp 0</div>
-
+            <div class="amount-display" id="successAmount">Rp 10.525</div>
             <div class="action-buttons">
                 <button class="secondary-btn">Bagikan</button>
                 <button class="primary-btn" onclick="showMain()">Selesai</button>
             </div>
         </div>
-
 
         <!-- Activity Screen -->
         <div class="activity-screen" id="activityScreen">
@@ -625,80 +1334,7 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
                 </div>
             </div>
         </div>
-
-        <!-- Edit Profil -->
-        <div class="edit-screen" id="editScreen">
-            <div class="screen-header">
-                <button class="back-btn" onclick="showMain()">←</button>
-                <div class="screen-title">Edit Profil</div>
-            </div>
-
-            <form class="transfer-form" id="transferForm" action="php/handler/profil/editprofil.php" method="post">
-                <div class="form-group">
-                    <label class="form-label">Nama lengkap</label>
-                    <input type="text" class="form-input" placeholder="nama lengkap" id="" name="nama_lengkap" required>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Alamat</label>
-                    <input type="text" class="form-input" placeholder="alamat" id="" name="alamat" required>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Nomor telepon</label>
-                    <input type="tel" class="form-input" placeholder="08..." id="" name="nomor_telepon" required>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-input" placeholder="email" id="" name="email" required>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-input" placeholder="password" id="" name="password" required>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Jenis kelamin</label>
-                    <select name="jenis_kelamin" id="gender" required>
-                        <option value="">Pilih jenis kelamin</option>
-                        <option value="P">Perempuan</option>
-                        <option value="L">Laki-laki</option>
-                    </select>
-                </div>
-                <button type="submit" class="submit-btn" >Simpan</button>
-            </form>
-        </div>
     </div>
-<script>
-    let balanceVisible = false;
-    balanceValue.textContent = '••••••••';
-    balanceValue.classList.add('balance-hidden');
-    const originalBalance = '<?= formatRupiah($rekening['saldo']) ?>';
-</script>
     <script src="js/main.js"></script>
-    <script>
-    const currentUserName = "<?php echo $_SESSION['user']['nama_lengkap']; ?>";
-
-    document.getElementById("accountNumber").addEventListener("input", function () {
-        const nomorRekening = this.value;
-        const namaField = document.getElementById("recipientName");
-    
-        if (nomorRekening.length >= 5) { // Bisa disesuaikan
-            fetch(`php/handler/get/get_nama_penerima.php?rekening=${nomorRekening}`)
-                .then(response => response.text())
-                .then(data => {
-                    namaField.value = data || "Rekening tidak ditemukan";
-                })
-                .catch(() => {
-                    namaField.value = "Gagal mengambil nama";
-                });
-        } else {
-            namaField.value = "";
-        }
-    });
-</script>
-
 </body>
 </html>

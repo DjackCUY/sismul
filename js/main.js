@@ -1,42 +1,62 @@
         // Data simulasi
-        // let currentBalance = 2235114.50;
-        // let transactions = [];
+        let currentBalance = 2235114.50;
+        let transactions = [];
 
         // Transfer functionality
-        // document.getElementById('transferForm').addEventListener('submit', function(e) {
-        //     e.preventDefault();
-        //     const accountNumber = document.getElementById('accountNumber').value;
-        //     const amount = parseFloat(document.getElementById('transferAmount').value);
-        //     const note = document.getElementById('transferNote').value;
-            
-        //     if (amount > currentBalance) {
-        //         alert('Saldo tidak mencukupi');
-        //         return;
-        //     }
-            
-        //     if (accountNumber && amount > 0) {
-        //         // Update balance
-        //         currentBalance -= amount;
-        //         updateBalanceDisplay();
+        document.getElementById('transferForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+        
+            const accountNumber = document.getElementById('accountNumber').value;
+            const amount = parseFloat(document.getElementById('transferAmount').value);
+            const note = document.getElementById('transferNote').value;
+            const recipientName = document.getElementById('recipientName').value;
+        
+            if (!accountNumber || amount <= 0 || recipientName === '' || recipientName === 'Rekening tidak ditemukan') {
+                alert('Mohon lengkapi data transfer dengan benar.');
+                return;
+            }
+        
+            const formData = new FormData();
+            formData.append('rekening_tujuan', accountNumber);
+            formData.append('jumlah', amount);
+            formData.append('catatan', note);
+        
+            fetch('php/handler/transaksi/proses_transaksi.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.text())
+            .then(response => {
+                if (response.includes('BERHASIL')) {
+                    // Update tampilan sukses
+                    document.getElementById('successAmount').textContent = `Rp ${amount.toLocaleString('id-ID')}`;
+                    document.getElementById('transactionDate').textContent = new Date().toLocaleString('id-ID');
+                    document.getElementById('successRecipient').textContent = recipientName;
+                    document.getElementById('successAlias').textContent = recipientName;
+                    document.getElementById('successAccount').textContent = accountNumber;
+                    document.getElementById('successSender').textContent = currentUserName;
+                    document.getElementById('successNote').textContent = note || "-";
+                    document.getElementById('successTransaksi').textContent = "#" + Math.floor(Math.random() * 10000000000);
+                    document.getElementById('successRef').textContent = Math.floor(100000000000 + Math.random() * 900000000000);
+
+                    transactions.unshift({
+                        type: 'transfer',
+                        amount: -amount,
+                        recipient: recipientName,
+                        date: new Date().toLocaleString('id-ID'),
+                        note: note
+                    });
                 
-        //         // Add to transaction history
-        //         transactions.unshift({
-        //             type: 'transfer',
-        //             amount: -amount,
-        //             recipient: 'TOKO HYPERSHOP.CO',
-        //             date: new Date().toLocaleString('id-ID'),
-        //             note: note
-        //         });
-                
-        //         // Update success screen
-        //         document.getElementById('successAmount').textContent = `Rp ${amount.toLocaleString('id-ID')}`;
-        //         document.getElementById('transactionDate').textContent = new Date().toLocaleString('id-ID');
-                
-        //         showSuccess();
-        //     } else {
-        //         alert('Mohon lengkapi data transfer');
-        //     }
-        // });
+                    showSuccess();
+                } else {
+                    alert('Gagal transfer: ' + response);
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Terjadi kesalahan saat mengirim data.');
+            });
+        });
 
         // Auto-fill recipient name when account number is entered
         document.getElementById('accountNumber').addEventListener('input', function(e) {
@@ -255,3 +275,25 @@
                 }
             }
         }
+
+    // Mata Saldo
+    function toggleBalance() {
+    const balanceValue = document.getElementById('balanceValue');
+    const balanceToggle = document.getElementById('balanceToggle');
+    
+    if (balanceVisible) {
+        // Sembunyikan saldo
+        balanceValue.textContent = '••••••••';
+        balanceValue.classList.add('balance-hidden');
+        balanceToggle.classList.remove('bi-eye');
+        balanceToggle.classList.add('bi-eye-slash');
+        balanceVisible = false;
+    } else {
+        // Tampilkan saldo
+        balanceValue.textContent = originalBalance;
+        balanceValue.classList.remove('balance-hidden');
+        balanceToggle.classList.remove('bi-eye-slash');
+        balanceToggle.classList.add('bi-eye');
+        balanceVisible = true;
+    }
+}

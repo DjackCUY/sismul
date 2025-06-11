@@ -1,4 +1,4 @@
-        * {
+* {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -100,6 +100,56 @@
             transform: translateY(-2px);
         }
 
+
+        /* Tampilan Aktivitas Mendatang */
+        .upcoming-activities {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .activity-suggestion {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #404040;
+            color: white;
+        }
+
+        .activity-suggestion:last-child {
+            border-bottom: none;
+        }
+
+        .activity-suggestion i {
+            font-size: 20px;
+            margin-right: 12px;
+            color: #4ade80;
+            background: #1f2937;
+            padding: 8px;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .activity-suggestion div {
+            flex: 1;
+        }
+
+        .activity-suggestion div div:first-child {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .activity-suggestion div div:last-child {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
         /* Main Screen */
         .main-screen {
             display: none;
@@ -172,6 +222,29 @@
             font-size: clamp(24px, 8vw, 32px);
             font-weight: bold;
             margin-bottom: 20px;
+        }
+
+
+        .balance-toggle {
+        cursor: pointer;
+        margin-left: 10px;
+        font-size: 18px;
+        color: #666;
+        transition: color 0.3s ease;
+        }
+
+        .balance-toggle:hover {
+            color: #333;
+        }
+
+        .balance-card .balance-amount {
+            display: flex;
+            align-items: center;
+        }
+
+        .balance-hidden {
+            font-family: monospace;
+            letter-spacing: 2px;
         }
 
         /* .card-actions {
@@ -263,17 +336,17 @@
         }
 
         .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 400px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px 20px 0 0;
-            padding: 15px 20px;
-            backdrop-filter: blur(10px);
-            z-index: 1000;
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 400px;
+        background: #2a2a2a;
+        border-radius: 20px 20px 0 0;
+        padding: 15px 20px;
+        z-index: 1000;
+        box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.2);
         }
 
         .nav-items {
@@ -312,6 +385,43 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 0;
+            color: #ffffff;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active {
+            background: #4CAF50;
+            color: #ffffff;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            color: inherit;
+        }
+
+        .nav-label {
+            font-size: 12px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: inherit;
         }
 
         /* Transfer Screen */
