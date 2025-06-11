@@ -52,10 +52,6 @@
         });
 
         // Navigation functions
-        function showLogin() {
-            hideAllScreens();
-            document.getElementById('loginScreen').style.display = 'flex';
-        }
 
         function showMain() {
             hideAllScreens();
@@ -81,6 +77,11 @@
             updateActivityList();
         }
 
+        function showEdit() {
+            hideAllScreens();
+            document.getElementById('editScreen').style.display = 'block';
+        }
+
         function showReport() {
             hideAllScreens();
             document.getElementById('reportScreen').style.display = 'block';
@@ -95,7 +96,7 @@
         }
 
         function hideAllScreens() {
-            const screens = ['loginScreen', 'mainScreen', 'transferScreen', 'successScreen', 'activityScreen', 'reportScreen', 'settingsScreen'];
+            const screens = [ 'mainScreen', 'transferScreen', 'successScreen', 'activityScreen', 'reportScreen', 'settingsScreen', 'editScreen'];
             screens.forEach(screen => {
                 document.getElementById(screen).style.display = 'none';
             });
@@ -170,11 +171,6 @@
                 `).join('');
             }
         }
-
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', function() {
-            showLogin();
-        });
 
         // Add click handlers for navigation
         document.querySelectorAll('.nav-item').forEach((item, index) => {
@@ -257,17 +253,5 @@
                         settingNameEl.textContent = originalText;
                     }, 1500);
                 }
-            }
-        }
-
-        function logout() {
-            if (confirm('Apakah Anda yakin ingin keluar dari akun?')) {
-                showLogin();
-                // Reset form
-                document.getElementById('loginForm').reset();
-                // Clear any stored data if needed
-                currentBalance = 2235114.50;
-                transactions = [];
-                updateBalanceDisplay();
             }
         }

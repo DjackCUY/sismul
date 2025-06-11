@@ -96,7 +96,7 @@ $user = $_SESSION['user'];
                 <div class="profile-avatar">FA</div>
                 <div class="profile-name">Fatimah Azzahrah</div>
                 <div class="profile-email">fatimah.azzahrah@email.com</div>
-                <a href="php/handler/profil/editprofil.php"><button class="edit-profile-btn">Edit Profil</button></a>
+                <button class="edit-profile-btn" onclick="showEdit()">Edit Profil</button>
             </div>
 
             <div class="settings-section">
@@ -446,6 +446,51 @@ $user = $_SESSION['user'];
                     <div class="activity-amount">-Rp 150.000</div>
                 </div>
             </div>
+        </div>
+
+        <!-- Edit Profil -->
+        <div class="edit-screen" id="editScreen">
+            <div class="screen-header">
+                <button class="back-btn" onclick="showMain()">←</button>
+                <div class="screen-title">Edit Profil</div>
+            </div>
+
+            <form class="transfer-form" id="transferForm" action="php/handler/profil/editprofil.php" method="post">
+                <div class="form-group">
+                    <label class="form-label">Nama lengkap</label>
+                    <input type="text" class="form-input" placeholder="nama lengkap" id="" name="nama_lengkap" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Alamat</label>
+                    <input type="text" class="form-input" placeholder="alamat" id="" name="alamat" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nomor telepon</label>
+                    <input type="tel" class="form-input" placeholder="08..." id="" name="nomor_telepon" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" placeholder="email" id="" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" placeholder="password" id="" name="password" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Jenis kelamin</label>
+                    <select name="jenis_kelamin" id="gender" required>
+                        <option value="">Pilih jenis kelamin</option>
+                        <option value="P">Perempuan</option>
+                        <option value="L">Laki-laki</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn" >Simpan</button>
+            </form>
         </div>
     </div>
     <script src="js/main.js"></script>
