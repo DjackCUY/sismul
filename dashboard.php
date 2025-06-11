@@ -4,9 +4,6 @@ include "php/db/connect.php";
 $user = $_SESSION['user'];
 ?>
 
-
-<?php
-?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -262,8 +259,7 @@ $user = $_SESSION['user'];
                     </div>
                 </div>
             </div>
-
-            <button class="logout-btn" onclick="logout()">Keluar dari Akun</button>
+            <a href="php/auth/logout.php"><button class="logout-btn">Keluar dari Akun</button></a>
         </div>
 
         <!-- Main Screen -->

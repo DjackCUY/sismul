@@ -1,42 +1,42 @@
         // Data simulasi
-        // let currentBalance = 2235114.50;
-        // let transactions = [];
+        let currentBalance = 2235114.50;
+        let transactions = [];
 
         // Transfer functionality
-        // document.getElementById('transferForm').addEventListener('submit', function(e) {
-        //     e.preventDefault();
-        //     const accountNumber = document.getElementById('accountNumber').value;
-        //     const amount = parseFloat(document.getElementById('transferAmount').value);
-        //     const note = document.getElementById('transferNote').value;
+        document.getElementById('transferForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const accountNumber = document.getElementById('accountNumber').value;
+            const amount = parseFloat(document.getElementById('transferAmount').value);
+            const note = document.getElementById('transferNote').value;
             
-        //     if (amount > currentBalance) {
-        //         alert('Saldo tidak mencukupi');
-        //         return;
-        //     }
+            if (amount > currentBalance) {
+                alert('Saldo tidak mencukupi');
+                return;
+            }
             
-        //     if (accountNumber && amount > 0) {
-        //         // Update balance
-        //         currentBalance -= amount;
-        //         updateBalanceDisplay();
+            if (accountNumber && amount > 0) {
+                // Update balance
+                currentBalance -= amount;
+                updateBalanceDisplay();
                 
-        //         // Add to transaction history
-        //         transactions.unshift({
-        //             type: 'transfer',
-        //             amount: -amount,
-        //             recipient: 'TOKO HYPERSHOP.CO',
-        //             date: new Date().toLocaleString('id-ID'),
-        //             note: note
-        //         });
+                // Add to transaction history
+                transactions.unshift({
+                    type: 'transfer',
+                    amount: -amount,
+                    recipient: 'TOKO HYPERSHOP.CO',
+                    date: new Date().toLocaleString('id-ID'),
+                    note: note
+                });
                 
-        //         // Update success screen
-        //         document.getElementById('successAmount').textContent = `Rp ${amount.toLocaleString('id-ID')}`;
-        //         document.getElementById('transactionDate').textContent = new Date().toLocaleString('id-ID');
+                // Update success screen
+                document.getElementById('successAmount').textContent = `Rp ${amount.toLocaleString('id-ID')}`;
+                document.getElementById('transactionDate').textContent = new Date().toLocaleString('id-ID');
                 
-        //         showSuccess();
-        //     } else {
-        //         alert('Mohon lengkapi data transfer');
-        //     }
-        // });
+                showSuccess();
+            } else {
+                alert('Mohon lengkapi data transfer');
+            }
+        });
 
         // Auto-fill recipient name when account number is entered
         document.getElementById('accountNumber').addEventListener('input', function(e) {
@@ -52,10 +52,6 @@
         });
 
         // Navigation functions
-        function showLogin() {
-            hideAllScreens();
-            document.getElementById('loginScreen').style.display = 'flex';
-        }
 
         function showMain() {
             hideAllScreens();
@@ -95,7 +91,7 @@
         }
 
         function hideAllScreens() {
-            const screens = ['loginScreen', 'mainScreen', 'transferScreen', 'successScreen', 'activityScreen', 'reportScreen', 'settingsScreen'];
+            const screens = ['mainScreen', 'transferScreen', 'successScreen', 'activityScreen', 'reportScreen', 'settingsScreen'];
             screens.forEach(screen => {
                 document.getElementById(screen).style.display = 'none';
             });
@@ -257,17 +253,5 @@
                         settingNameEl.textContent = originalText;
                     }, 1500);
                 }
-            }
-        }
-
-        function logout() {
-            if (confirm('Apakah Anda yakin ingin keluar dari akun?')) {
-                showLogin();
-                // Reset form
-                document.getElementById('loginForm').reset();
-                // Clear any stored data if needed
-                currentBalance = 2235114.50;
-                transactions = [];
-                updateBalanceDisplay();
             }
         }
