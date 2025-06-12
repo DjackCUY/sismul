@@ -297,3 +297,77 @@
         balanceVisible = true;
     }
 }
+
+async function refreshData() {
+    const refreshBtn = document.getElementById('refreshBtn');
+    
+    // Tambahkan loading state
+    refreshBtn.classList.add('loading');
+    
+    try {
+        // Panggil fungsi untuk refresh saldo dan data lainnya
+        await Promise.all([
+            refreshSaldo(),
+            refreshUserData(),
+            // Tambahkan fungsi refresh lainnya sesuai kebutuhan
+        ]);
+        
+        // Tampilkan notifikasi sukses (opsional)
+        showNotification('Data berhasil diperbarui', 'success');
+        
+    } catch (error) {
+        console.error('Error refreshing data:', error);
+        showNotification('Gagal memperbarui data', 'error');
+    } finally {
+        // Hapus loading state
+        refreshBtn.classList.remove('loading');
+    }
+}
+
+// 4. Fungsi helper untuk refresh saldo (sesuaikan dengan struktur aplikasi Anda)
+async function refreshSaldo() {
+    const response = await fetch('../php/handler/refresh/refresh.php'); // Ganti ke rekening dinamis
+    const data = await response.json();
+
+    if (data.saldo !== undefined) {
+        const saldoElement = document.getElementById('saldo');
+        if (saldoElement) {
+            saldoElement.textContent = `Rp ${data.saldo.toLocaleString('id-ID')}`;
+        }
+    }
+
+    if (data.user) {
+        const userName = document.getElementById('userName');
+        const userEmail = document.getElementById('userEmail');
+        const userPhone = document.getElementById('userPhone');
+
+        if (userName) userName.textContent = data.user.nama;
+        if (userEmail) userEmail.textContent = data.user.email;
+        if (userPhone) userPhone.textContent = data.user.telepon;
+    }
+
+    if (data.error) {
+        showNotification(data.error, 'error');
+    }
+}
+
+
+// 5. Fungsi helper untuk refresh data user (sesuaikan dengan kebutuhan)
+async function refreshUserData() {
+    // Contoh: refresh data profil user
+    const response = await fetch('/api/user/profile');
+    const userData = await response.json();
+    
+    // Update tampilan data user jika diperlukan
+    // Sesuaikan dengan struktur data dan element yang ada
+}
+
+// 6. Fungsi helper untuk menampilkan notifikasi (opsional)
+function showNotification(message, type = 'info') {
+    // Implementasi notifikasi sesuai dengan sistem yang Anda gunakan
+    // Contoh sederhana:
+    console.log(`${type.toUpperCase()}: ${message}`);
+    
+    // Atau bisa menggunakan alert, toast, atau sistem notifikasi lainnya
+    // alert(message);
+}
