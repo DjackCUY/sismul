@@ -153,7 +153,6 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Tambahkan di dalam tag <style> yang sudah ada di dashboard.php -->
 <style>
-
 /* Perbaikan hover navbar - area yang lebih kecil dan rapi */
 .bottom-nav .nav-item {
     padding: 6px 4px;
@@ -261,6 +260,7 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
                 <div class="profile-name"><?= htmlspecialchars($user['nama_lengkap']) ?></div>
                 <div class="profile-email"><?= htmlspecialchars($user['email']) ?></div>
                 <button class="edit-profile-btn"><i class="bi bi-pencil"></i> Edit Profil</button>
+
             </div>
 
             <div class="settings-section">
@@ -449,6 +449,16 @@ $recommendations = generateRecommendations($rekening['saldo'], $total_pengeluara
                     </div>
                     <div class="user-name"><?= htmlspecialchars($user['nama_lengkap']) ?></div>
                 </div>
+
+                <button class="refresh-btn" onclick="refreshData()" id="refreshBtn">
+                <svg class="refresh-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 2v6h-6"></path>
+                    <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+                    <path d="M3 22v-6h6"></path>
+                    <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+                </svg>
+            </button>
+
                 <div class="profile-pic"><?= strtoupper(substr($user['nama_lengkap'], 0, 2)) ?></div>
             </div>
 
