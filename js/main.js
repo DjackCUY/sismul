@@ -97,6 +97,11 @@
             updateActivityList();
         }
 
+        function showEdit() {
+            hideAllScreens();
+            document.getElementById('editScreen').style.display = 'block';
+        }
+
         function showReport() {
             hideAllScreens();
             document.getElementById('reportScreen').style.display = 'block';
@@ -111,7 +116,7 @@
         }
 
         function hideAllScreens() {
-            const screens = ['mainScreen', 'transferScreen', 'successScreen', 'activityScreen', 'reportScreen', 'settingsScreen'];
+            const screens = [ 'mainScreen', 'transferScreen', 'successScreen', 'activityScreen', 'reportScreen', 'settingsScreen', 'editScreen'];
             screens.forEach(screen => {
                 document.getElementById(screen).style.display = 'none';
             });
