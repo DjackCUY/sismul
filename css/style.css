@@ -103,7 +103,7 @@
 
         /* Tampilan Aktivitas Mendatang */
         .upcoming-activities {
-            background: #2a2a2a;
+            background: #313143;
             border-radius: 12px;
             padding: 16px;
             margin-top: 20px;
@@ -113,7 +113,7 @@
             display: flex;
             align-items: center;
             padding: 12px 0;
-            border-bottom: 1px solid #404040;
+            border-bottom: 1px solid #313143;
             color: white;
         }
 
@@ -125,7 +125,7 @@
             font-size: 20px;
             margin-right: 12px;
             color: #4ade80;
-            background: #1f2937;
+            background: #313143;
             padding: 8px;
             border-radius: 50%;
             width: 36px;
@@ -437,23 +437,78 @@
             display: flex;
             align-items: center;
             margin-bottom: 30px;
+            gap: 4px; /* Jarak antara button dan title */
+            padding: 2px 4px;
             flex-shrink: 0;
         }
 
-        .back-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            margin-right: 15px;
-            padding: 8px;
-        }
+/* Hover effect untuk back button - ukuran lebih kecil */
+.back-btn {
+    background: none;
+    border: none;
+    font-size: 18px; /* Kurangi dari 20px ke 18px */
+    cursor: pointer;
+    padding: 6px 8px; /* Kurangi padding dari 8px 10px */
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px; /* Kurangi dari 40px ke 32px */
+    height: 32px; /* Kurangi dari 40px ke 32px */
+    margin-right: 0px; /* Tambahkan margin untuk jarak dari tulisan */
+}
+
+.back-btn:hover {
+    background-color: rgba(255, 255, 255, 0.08); /* Kurangi opacity dari 0.1 ke 0.08 */
+    transform: scale(1.02); /* Kurangi scale dari 1.05 ke 1.02 */
+}
+
+.back-btn:active {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: scale(0.98); /* Kurangi dari 0.95 ke 0.98 */
+}
+
+/* Untuk memastikan ikon di dalam button tetap centered */
+.back-btn i {
+    pointer-events: none;
+    font-size: 30px; /* Tentukan ukuran ikon yang lebih kecil */
+}
+
+/* Responsive hover - hanya aktif di desktop */
+@media (hover: hover) {
+    .back-btn:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+    }
+}
+
+/* Untuk mobile, gunakan active state */
+@media (hover: none) {
+    .back-btn:active {
+        background-color: rgba(255, 255, 255, 0.12);
+    }
+}
+
+/* Alternatif: Jika ingin lebih kecil lagi */
+.back-btn.compact {
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+    padding: 4px 6px;
+}
+
+.back-btn.compact:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    transform: scale(1.01);
+}
 
         .screen-title {
             color: white;
             font-size: 20px;
             font-weight: 600;
+            flex: 1;
+            margin-left: 0;
         }
 
         .transfer-form {
@@ -461,36 +516,79 @@
             overflow-y: auto;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+/* CSS sederhana tanpa floating label */
+.form-group {
+    margin-bottom: 20px;
+    position: relative;
+}
 
-        .form-label {
-            color: white;
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            opacity: 0.8;
-        }
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    opacity: 0.8;
+    color: rgba(255, 255, 255, 0.8);
+    /* Hapus semua positioning absolute dan transition */
+    position: static;
+    background: none;
+    padding: 0;
+}
 
-        #gender {
-            color: rgba(255, 255, 255, 0.6);
-        }
+#gender {
+    color: rgba(255, 255, 255, 0.6);
+}
 
-        .form-input {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 16px;
-            backdrop-filter: blur(10px);
-        }
+.form-input {
+    width: 100%;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
 
-        .form-input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Tampilkan placeholder normal */
+.form-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+    opacity: 1;
+}
+
+/* Focus state untuk input */
+.form-input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+/* Hover effect untuk input */
+.form-input:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Style untuk input readonly */
+.form-input[readonly] {
+    background-color: rgba(255, 255, 255, 0.05);
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-label {
+        font-size: 13px;
+    }
+    
+    .form-input {
+        font-size: 15px;
+    }
+}
 
         .submit-btn {
             width: 100%;
